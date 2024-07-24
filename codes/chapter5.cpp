@@ -15,20 +15,12 @@ const char* vertexShaderSource =
 	"gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 "}\n";
 
-const char* fragmentShaderOrange = 
+const char* fragmentShaderSource = 
 "#version 330 core\n"
 "out vec4 FragColor;\n"
 
 "void main() { \n"
 "	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\n";
-
-const char* fragmentShaderYellow= 
-"#version 330 core\n"
-"out vec4 FragColor;\n"
-
-"void main() { \n"
-"	FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
 "}\n";
 
 int main(){
@@ -69,8 +61,8 @@ int main(){
 	glCompileShader(vertexShader);
 
 	int success; 
+	char infoLog[512]; 
 	const int infoBufferSize = 512;
-	char infoLog[infoBufferSize]; 
 
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success); // integer verctor but success int? 
 
@@ -82,115 +74,118 @@ int main(){
 	// Fragment Shader:
 
 	//create shader object
-	unsigned int fragmentShaders[2];
-
-	fragmentShaders[0] = glCreateShader(GL_FRAGMENT_SHADER);
-
-	//attach the shader code and compile
-	glShaderSource(fragmentShaders[0], 1, &fragmentShaderOrange, NULL);
-	glCompileShader(fragmentShaders[0]);
-
-	glGetShaderiv(fragmentShaders[0], GL_COMPILE_STATUS, &success);
-
-	if(!success){
-		glGetShaderInfoLog(fragmentShaders[0], infoBufferSize, NULL, infoLog); 
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl; 
-	}
-
-	fragmentShaders[1] = glCreateShader(GL_FRAGMENT_SHADER);
+	unsigned int fragmentShader;
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
 	//attach the shader code and compile
-	glShaderSource(fragmentShaders[1], 1, &fragmentShaderYellow, NULL);
-	glCompileShader(fragmentShaders[1]);
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	glCompileShader(fragmentShader);
 
-	glGetShaderiv(fragmentShaders[1], GL_COMPILE_STATUS, &success);
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
 
 	if(!success){
-		glGetShaderInfoLog(fragmentShaders[1], infoBufferSize, NULL, infoLog); 
+		glGetShaderInfoLog(fragmentShader, infoBufferSize, NULL, infoLog); 
 		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl; 
 	}
-
-
-	// create shader programs and link the shaders:
-
-	//create the shader program object
-	unsigned int shaderPrograms[2];
-	shaderPrograms[0] = glCreateProgram();
-	shaderPrograms[1] = glCreateProgram();
-
-	// attach the shaders and link
-	glAttachShader(shaderPrograms[0], vertexShader);
-	glAttachShader(shaderPrograms[0], fragmentShaders[0]);
-	glLinkProgram(shaderPrograms[0]);
 
 	// create shader program and link the shaders:
 
+	//create the shader program object
+	unsigned int shaderProgram;
+	shaderProgram = glCreateProgram();
+
 	// attach the shaders and link
-	glAttachShader(shaderPrograms[1], vertexShader);
-	glAttachShader(shaderPrograms[1], fragmentShaders[1]);
-	glLinkProgram(shaderPrograms[1]);
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
 
 	// delete the shaders after linking.
 	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShaders[0]);
-	glDeleteShader(fragmentShaders[1]);
+	glDeleteShader(fragmentShader);
 
 
 	// our triangle vertices:
-	const float triangleVertices1[] = {
-		-1.0f, -0.5f, 0.0f, 
-		0.0f, -0.5f, 0.0f, 
-		-0.5f, 0.5f, 0.0f 
+	const float triangleVertices[] = {
+		-0.5f, -0.5f, 0.0f, 
+		0.5f, -0.5f, 0.0f, 
+		0.0f, 0.5f, 0.0f 
 	};
 
-	const float triangleVertices2[] = {
-		0.0f, -0.5f, 0.0f, 
-		1.0f, -0.5f, 0.0f, 
-		0.5f, 0.5f, 0.0f 
+	const float rectangleVertices[] = {
+		0.5f, 0.5f, 0.0f, // top right 
+		0.5f, -0.5f, 0.0f, // bottom right 
+		-0.5f, -0.5f, 0.0f, // bottom left 
+		-0.5f, 0.5f, 0.0f // top left
 	};
 
+	const unsigned int rectangleIndices[] = {
+		0, 1, 3,
+		1, 2, 3
+	};
 
 
 	//init the triangle:
 	
-	//create the VAOs and VBOs
-	unsigned int VAOs[2],VBOs[2];
-	glGenVertexArrays(2, VAOs);
-	glGenBuffers(2, VBOs);
+	// //create the VAO
+	// unsigned int VAO;
+	// glGenVertexArrays(1, &VAO);
+	//
+	// // create the vertex buffer object:
+	// unsigned VBO;
+	// glGenBuffers(1, &VBO);
+	//
+	// // bind vao and set state
+	// glBindVertexArray(VAO);
+	//
+	// glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW);
+	//
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+	//
+	// glEnableVertexAttribArray(0); 
+	//
+	// // unbind the vao and vbo
+	// glBindBuffer(GL_ARRAY_BUFFER, 0); // this is allowed because vao used GL_ARRAY_BUFFER already.
+	// glBindVertexArray(0);
+	//
+	// glUseProgram(shaderProgram);
+	// glBindVertexArray(VAO);
 
-	//first triangle
+	// init the rectangle:
+	//create the VAO
+	unsigned int VAO;
+	glGenVertexArrays(1, &VAO);
+
+	// create the vertex buffer object:
+	unsigned VBO;
+	glGenBuffers(1, &VBO);
+
+	// create the element buffer object:
+	unsigned EBO;
+	glGenBuffers(1, &EBO);
+
 	// bind vao and set state
-	glBindVertexArray(VAOs[0]);
+	glBindVertexArray(VAO);
 
-	// bind vbo and config
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices1), triangleVertices1, GL_STATIC_DRAW);
+	// bind and tes the vbo:
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rectangleVertices), rectangleVertices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
 
 	glEnableVertexAttribArray(0); 
 
-	// unbind the vao and vbo
-	glBindBuffer(GL_ARRAY_BUFFER, 0); // this is allowed because vao used GL_ARRAY_BUFFER already.
-	glBindVertexArray(0);
-
-
-	// second triangle
-	// bind vao and set state
-	glBindVertexArray(VAOs[1]);
-
-	// bind vbo and config
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices2), triangleVertices2, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
-
-	glEnableVertexAttribArray(0); 
+	// bind and set the ebo:
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); 
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(rectangleIndices), rectangleIndices, GL_STATIC_DRAW); 
 
 	// unbind the vao and vbo
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // this is allowed because vao used GL_ARRAY_BUFFER already.
 	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+	glUseProgram(shaderProgram);
+	glBindVertexArray(VAO);
 
 	while(!glfwWindowShouldClose(window)){
 		//input
@@ -201,18 +196,18 @@ int main(){
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-	
-		//draw triangles:
-		glUseProgram(shaderPrograms[0]);
-		glBindVertexArray(VAOs[0]);
-		glDrawArrays(GL_TRIANGLES, 0, 3);  
+		//draw the first triangle
 
-		//draw triangles:
-		glUseProgram(shaderPrograms[1]);
-		glBindVertexArray(VAOs[1]);
-		glDrawArrays(GL_TRIANGLES, 0, 3);  
-	
+		// glUseProgram(shaderProgram); // do we need to use the shame shader program and bind the same vao every frame?
+		// glBindVertexArray(VAO);
 		
+		// draw triangle:
+		//glDrawArrays(GL_TRIANGLES, 0, 3);  
+		
+		// draw rectangle;
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
 		// check call events and swap buffers.
 		glfwSwapBuffers(window);
 		glfwPollEvents();
