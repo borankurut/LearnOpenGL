@@ -1,6 +1,5 @@
 #pragma once
-
-#include <iostream>
+#include <string>
 
 class Shader{
 
@@ -17,4 +16,6 @@ public:
 	void setInt(const std::string& name, int value) const;
 
 private:
+	/*empty*/
 };
+

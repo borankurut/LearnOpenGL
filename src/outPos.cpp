@@ -9,9 +9,8 @@ void processInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const char* vertexShaderFileName = "./Shaders/vertexShaderPlain.vert";
-const char* fragmentShaderOrangeFileName = "./Shaders/fragmentShaderOrange.frag";
-const char* fragmentShaderYellowFileName = "./Shaders/fragmentShaderYellow.frag";
+const char* vertexShaderFileName = "./Shaders/vertexShaderOutPosition.vert";
+const char* fragmentShaderFileName= "./Shaders/fragmentShaderPos.frag";
 
 int main(){
 	glfwInit();
@@ -40,37 +39,28 @@ int main(){
 
 	// shaders:
 	
-	Shader yellowShader(vertexShaderFileName, fragmentShaderYellowFileName);
-	Shader orangeShader(vertexShaderFileName, fragmentShaderOrangeFileName);
+	Shader shader(vertexShaderFileName, fragmentShaderFileName);
 
 	// our triangle vertices:
 	const float triangleVertices1[] = {
-		-1.0f, -0.5f, 0.0f, 
-		0.0f, -0.5f, 0.0f, 
-		-0.5f, 0.5f, 0.0f 
+		-0.5f, -0.5f, 0.0f, 
+		0.5f, -0.5f, 0.0f, 
+		0.0f, 0.5f, 0.0f 
 	};
-
-	const float triangleVertices2[] = {
-		0.0f, -0.5f, 0.0f, 
-		1.0f, -0.5f, 0.0f, 
-		0.5f, 0.5f, 0.0f 
-	};
-
-
 
 	//init the triangle:
 	
 	//create the VAOs and VBOs
-	unsigned int VAOs[2],VBOs[2];
-	glGenVertexArrays(2, VAOs);
-	glGenBuffers(2, VBOs);
+	unsigned int VAO, VBO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
 
 	//first triangle
 	// bind vao and set state
-	glBindVertexArray(VAOs[0]);
+	glBindVertexArray(VAO);
 
 	// bind vbo and config
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices1), triangleVertices1, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
@@ -81,25 +71,6 @@ int main(){
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // this is allowed because vao used GL_ARRAY_BUFFER already.
 	glBindVertexArray(0);
 
-
-	// second triangle
-	// bind vao and set state
-	glBindVertexArray(VAOs[1]);
-
-	// bind vbo and config
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices2), triangleVertices2, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
-
-	glEnableVertexAttribArray(0); 
-
-	// unbind the vao and vbo
-	glBindBuffer(GL_ARRAY_BUFFER, 0); // this is allowed because vao used GL_ARRAY_BUFFER already.
-	glBindVertexArray(0);
-
-	float hor_off = 0.0f;
-
 	while(!glfwWindowShouldClose(window)){
 		//input
 		processInput(window);
@@ -108,28 +79,13 @@ int main(){
 		//render
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-	
-		hor_off += 0.001;
-		if (hor_off > 0.5) {
-			hor_off = 0.0;
-		}
-
 
 		//draw triangles:
-		yellowShader.use();
-		yellowShader.setFloat("hor_off", hor_off);
+		shader.use();
 
-		glBindVertexArray(VAOs[0]);
+		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);  
 
-		//draw triangles:
-		orangeShader.use();
-		orangeShader.setFloat("hor_off", hor_off);
-
-		glBindVertexArray(VAOs[1]);
-		glDrawArrays(GL_TRIANGLES, 0, 3);  
-	
-		
 		// check call events and swap buffers.
 		glfwSwapBuffers(window);
 		glfwPollEvents();

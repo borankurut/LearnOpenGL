@@ -1,5 +1,6 @@
 #include "shader.hpp"
 #include "glad/glad.h"
+#include <iostream>
 #include <fstream>
 #include <sstream>
 
@@ -15,7 +16,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath){
 	fragmentFile.exceptions(std::fstream::failbit | std::fstream::badbit);
 
 	try{
-		std::cout << vertexPath << std::endl;
 		vertexFile.open(vertexPath);
 		fragmentFile.open(fragmentPath);
 
