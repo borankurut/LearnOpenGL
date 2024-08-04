@@ -10,7 +10,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 const char* vertexShaderFileName = "./Shaders/vertexShaderPlain.vert";
-const char* fragmentShaderOrangeFileName = "./Shaders/fragmentShaderOrange.frag";
+const char* fragmentShaderFileName = "./Shaders/fragmentShaderOrange.frag";
 const char* fragmentShaderYellowFileName = "./Shaders/fragmentShaderYellow.frag";
 
 int main(){
@@ -41,7 +41,7 @@ int main(){
 	// shaders:
 	
 	Shader yellowShader(vertexShaderFileName, fragmentShaderYellowFileName);
-	Shader orangeShader(vertexShaderFileName, fragmentShaderOrangeFileName);
+	Shader orangeShader(vertexShaderFileName, fragmentShaderFileName);
 
 	// our triangle vertices:
 	const float triangleVertices1[] = {

@@ -25,6 +25,7 @@ add_subdirectory(extern/glad)
 # Include directories from external libraries
 include_directories(extern/glfw/include)
 include_directories(extern/glad/include)
+include_directories(extern/stb)
 
 # Add src and lib directories
 include_directories(src)
@@ -34,10 +35,19 @@ include_directories(lib)
 file(GLOB_RECURSE SRC_FILES "src/*.cpp")
 file(GLOB_RECURSE LIB_FILES "lib/*.cpp")
 
+# Copy Shaders directory to the build directory
+add_custom_target(copy_shaders ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/Shaders ${CMAKE_BINARY_DIR}/Shaders
+)
+
 # Function to create an executable for each main cpp file
 function(add_application app_name)
     add_executable(${app_name} ${ARGN} ${LIB_FILES})
     target_link_libraries(${app_name} glfw glad)
+
+    # Ensure shaders are copied before building the executable
+    add_dependencies(${app_name} copy_shaders)
 
     # Platform-specific libraries
     if (UNIX AND NOT APPLE)
