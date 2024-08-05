@@ -10,8 +10,8 @@ void processInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const char* vertexShaderFileName = "Shaders/vs_texture.vert";
-const char* fragmentShaderFileName = "Shaders/fs_texture.frag";
+const char* vertexShaderPath = "Shaders/vs_texture.vert";
+const char* fragmentShaderPath = "Shaders/fs_texture.frag";
 
 float smileyAmount = 0.0f;
 
@@ -40,7 +40,7 @@ int main(){
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
 	// shaders:
-	Shader shader(vertexShaderFileName, fragmentShaderFileName);
+	Shader shader(vertexShaderPath, fragmentShaderPath);
 
 	//vertices
 	const float vertices[] = {
@@ -68,20 +68,18 @@ int main(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-	int width, height, nrChannels;
-	unsigned char* data = ImageLoader::get().loadImage("Textures/cami.png", &width, &height, &nrChannels, 0);
-
-	if(data){
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	ImageLoader::ImageInfo camiInfo = ImageLoader::get().loadImage("Textures/cami.png", 0);
+	if(camiInfo.data){
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, camiInfo.width, camiInfo.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, camiInfo.data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		ar1[0] = 1.0f;
-		ar1[1] = (float) height/width;
+		ar1[1] = 1.0f / camiInfo.aspectRatio; 
 	}
 
 	else{
 		std::cerr << "Couldn't load texture.\n";
 	}
-	ImageLoader::get().freeImage(data);
+	ImageLoader::get().freeImage(camiInfo.data);
 	// unbind texture
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -95,19 +93,19 @@ int main(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-	data = ImageLoader::get().loadImage("Textures/celal.png", &width, &height, &nrChannels, 0);
-
-	if(data){
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	ImageLoader::ImageInfo celalInfo = ImageLoader::get().loadImage("Textures/celal.png", 0);
+	if(celalInfo.data){
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, celalInfo.width, celalInfo.height,  0, GL_RGBA, GL_UNSIGNED_BYTE, celalInfo.data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		ar2[0] = 1.0f;
-		ar2[1] = (float) height/width;
+		ar2[1] = 1.0f / celalInfo.aspectRatio; 
+
 	}
 
 	else{
 		std::cerr << "Couldn't load texture.\n";
 	}
-	ImageLoader::get().freeImage(data);
+	ImageLoader::get().freeImage(celalInfo.data);
 	// unbind texture
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -189,10 +187,10 @@ void processInput(GLFWwindow* window){
 	}
 
 	if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && smileyAmount <= 1.0f){
-		smileyAmount += 0.001f;
+		smileyAmount += 0.005f;
 	}
 	if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && smileyAmount >= 0.0f){
-		smileyAmount -= 0.001f;
+		smileyAmount -= 0.005f;
 	}
 }
 

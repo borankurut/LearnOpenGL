@@ -3,9 +3,18 @@
 class ImageLoader{
 
 public:
+	struct ImageInfo{
+		int width;
+		int height;
+		int nrChannels;
+		float aspectRatio;
+
+		unsigned char* data;
+	};
+
 	static ImageLoader& get();
 
-	unsigned char* loadImage(const char *filename, int* width, int* height, int* nrChannels, int req_comp) const;
+	ImageInfo loadImage(const char *filename, int req_comp) const;
 
 	void freeImage(unsigned char * data) const;
 
@@ -16,3 +25,6 @@ private:
     ImageLoader(const ImageLoader&) = delete;
     ImageLoader& operator=(const ImageLoader&) = delete;
 };
+
+
+

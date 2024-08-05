@@ -8,8 +8,13 @@ ImageLoader& ImageLoader::get(){
 	return instance;
 }
 
-unsigned char* ImageLoader::loadImage(const char *filename, int* width, int* height, int* nrChannels, int req_comp) const{
-	return stbi_load(filename, width, height, nrChannels, req_comp);
+ImageLoader::ImageInfo ImageLoader::loadImage(const char *filename, int req_comp) const{
+	ImageLoader::ImageInfo imageInfo;
+
+	imageInfo.data = stbi_load(filename, &imageInfo.width, &imageInfo.height, &imageInfo.nrChannels, req_comp);
+	imageInfo.aspectRatio = (float) imageInfo.width / (float) imageInfo.height;
+
+	return imageInfo;
 }
 
 void ImageLoader::freeImage(unsigned char * data) const{

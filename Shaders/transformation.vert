@@ -6,12 +6,10 @@ layout (location = 2) in vec2 aTextCoord;
 
 out vec3 ourColor;
 out vec2 TexCoord;
-out vec3 verCoord;
 
 void main(){
 	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
 	ourColor = aColor;
 	TexCoord = aTextCoord;
-	verCoord = aPos;
 };
 
