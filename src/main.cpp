@@ -9,8 +9,8 @@ void processInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const char* vertexShaderFileName = "./Shaders/vertexShaderPlain.vert";
-const char* fragmentShaderFileName = "./Shaders/fragmentShaderOrange.frag";
+const char* vertexShaderPath = "./Shaders/vertexShaderPlain.vert";
+const char* fragmentShaderPath = "./Shaders/fragmentShaderOrange.frag";
 const char* fragmentShaderYellowFileName = "./Shaders/fragmentShaderYellow.frag";
 
 int main(){
@@ -40,8 +40,8 @@ int main(){
 
 	// shaders:
 	
-	Shader yellowShader(vertexShaderFileName, fragmentShaderYellowFileName);
-	Shader orangeShader(vertexShaderFileName, fragmentShaderFileName);
+	Shader yellowShader(vertexShaderPath, fragmentShaderYellowFileName);
+	Shader orangeShader(vertexShaderPath, fragmentShaderPath);
 
 	// our triangle vertices:
 	const float triangleVertices1[] = {

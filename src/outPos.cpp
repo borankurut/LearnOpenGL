@@ -9,8 +9,8 @@ void processInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const char* vertexShaderFileName = "./Shaders/vertexShaderOutPosition.vert";
-const char* fragmentShaderFileName= "./Shaders/fragmentShaderPos.frag";
+const char* vertexShaderPath = "./Shaders/vertexShaderOutPosition.vert";
+const char* fragmentShaderPath= "./Shaders/fragmentShaderPos.frag";
 
 int main(){
 	glfwInit();
@@ -39,7 +39,7 @@ int main(){
 
 	// shaders:
 	
-	Shader shader(vertexShaderFileName, fragmentShaderFileName);
+	Shader shader(vertexShaderPath, fragmentShaderPath);
 
 	// our triangle vertices:
 	const float triangleVertices1[] = {

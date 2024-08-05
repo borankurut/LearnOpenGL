@@ -23,9 +23,7 @@ add_subdirectory(extern/glfw)
 add_subdirectory(extern/glad)
 
 # Include directories from external libraries
-include_directories(extern/glfw/include)
-include_directories(extern/glad/include)
-include_directories(extern/stb)
+include_directories(include)
 
 # Add src and lib directories
 include_directories(src)

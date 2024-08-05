@@ -3,6 +3,9 @@
 #include <iostream>
 #include "shader.hpp"
 #include "image_loader.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -52,7 +55,6 @@ int main(){
 
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
-
 	Shader shader(vertexShaderPath, fragmentShaderPath);
 
 	unsigned int VAO, VBO, EBO;
@@ -81,6 +83,46 @@ int main(){
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+	unsigned int texture1;
+	glGenTextures(1, &texture1);
+	glBindTexture(GL_TEXTURE_2D, texture1);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	ImageLoader::ImageInfo smileInfo = ImageLoader::get().loadImage("textures/container.jpg", 0);
+	if(smileInfo.data){
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, smileInfo.width, smileInfo.height,  0, GL_RGB, GL_UNSIGNED_BYTE, smileInfo.data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else{
+		std::cout << "couldn't load image." << std::endl;
+	}
+
+	unsigned int texture2;
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	ImageLoader::ImageInfo containerInfo = ImageLoader::get().loadImage("textures/awesomeface.png", 0);
+	if(containerInfo.data){
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, containerInfo.width, containerInfo.height,  0, GL_RGBA, GL_UNSIGNED_BYTE, containerInfo.data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else{
+		std::cout << "couldn't load image." << std::endl;
+	}
+
+	shader.use();
+	shader.setInt("texture1", 0);
+	shader.setInt("texture2", 1);
+
 	while(!glfwWindowShouldClose(window)){
 		//input
 		processInput(window);
@@ -91,6 +133,12 @@ int main(){
 
 		shader.use();
 		glBindVertexArray(VAO);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	
