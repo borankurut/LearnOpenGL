@@ -119,9 +119,26 @@ int main(){
 		std::cout << "couldn't load image." << std::endl;
 	}
 
+
+	glm::mat4 transform1 = glm::mat4(1.0f);
+	transform1 = glm::translate(transform1, glm::vec3(0.5f, 0.0f, 0.0f));
+	transform1 = glm::scale(transform1, glm::vec3(0.5f, 0.5f, 0.5f));
+
+	glm::mat4 transform2 = glm::mat4(1.0f);
+	transform2 = glm::translate(transform2, glm::vec3(-0.5f, 0.0f, 0.0f));
+	transform2 = glm::scale(transform2, glm::vec3(0.5f, 0.5f, 0.5f));
+
+
+
+
 	shader.use();
 	shader.setInt("texture1", 0);
 	shader.setInt("texture2", 1);
+	shader.setMat4("transform", transform1);
+
+	double prev_time = glfwGetTime();
+	double current_time = glfwGetTime();
+	float delta_time = 0.0f;
 
 	while(!glfwWindowShouldClose(window)){
 		//input
@@ -131,7 +148,13 @@ int main(){
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+
+		const float rotation_speed = 40.0f * 10.0f;
+		transform1 = glm::rotate(transform1, glm::radians(delta_time * rotation_speed), glm::vec3(0, 0, 1));
+
 		shader.use();
+		shader.setMat4("transform", transform1);
+
 		glBindVertexArray(VAO);
 
 		glActiveTexture(GL_TEXTURE0);
@@ -141,10 +164,26 @@ int main(){
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		transform2 = glm::mat4(1.0f);
+		transform2 = glm::translate(transform2, glm::vec3(-0.5f, 0.0f, 0.0f));
+		transform2 = glm::scale(transform2, glm::vec3(0.5f));
+
+		transform2 = glm::scale(transform2, glm::vec3(glm::abs(glm::sin(current_time))));
+
+		shader.setMat4("transform", transform2);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 	
+		
+		current_time = glfwGetTime();
+		delta_time = prev_time - current_time;
+		prev_time = current_time;
+
 		// check call events and swap buffers.
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
 	}
 
 
@@ -160,4 +199,5 @@ void processInput(GLFWwindow* window){
 		glfwSetWindowShouldClose(window, true);
 	}
 }
+
 
