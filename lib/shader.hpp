@@ -17,6 +17,7 @@ public:
 	void setInt(const std::string& name, int value) const;
 
 	void setMat4(const std::string& name, glm::mat4 matrix) const;
+	void setVec3(const std::string& name, glm::vec3 vec) const;
 
 private:
 	/*empty*/

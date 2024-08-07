@@ -70,3 +70,4 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 else()
     add_compile_definitions(RELEASE)
 endif()
+
