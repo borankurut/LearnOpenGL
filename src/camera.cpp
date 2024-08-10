@@ -10,15 +10,17 @@
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
+void mouseCallback(GLFWwindow* window, double pos_x, double pos_y);
+void scrollCallback(GLFWwindow* window, double offset_x, double offset_y);
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const char* vertexShaderPath = "Shaders/coordinate_space.vert";
-const char* fragmentShaderPath = "Shaders/coordinate_space.frag";
+const char* g_vertexShaderPath = "Shaders/coordinate_space.vert";
+const char* g_fragmentShaderPath = "Shaders/coordinate_space.frag";
 
 //vertices
-float vertices[] = { 
+float g_vertices[] = { 
 	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
 	0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
 	0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
@@ -63,7 +65,7 @@ float vertices[] = {
 	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f 
 };
 
-const glm::vec3 cubePositions[]{
+const glm::vec3 g_cubePositions[]{
 	 glm::vec3( 0.0f, 0.0f, 0.0f), 
 	 glm::vec3( 2.0f, 5.0f, -15.0f), 
 	 glm::vec3(-1.5f, -2.2f, -2.5f), 
@@ -80,6 +82,9 @@ const glm::vec3 cubePositions[]{
 float delta_time = 0.0f;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+
+float yaw = 0.0f;
+float pitch = 0.0f;
 
 int main(){
 	glfwInit();
@@ -104,10 +109,15 @@ int main(){
 	}
 
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+	glfwSetCursorPosCallback(window, mouseCallback);
+	glfwSetScrollCallback(window, scrollCallback);
+
+	//disable cursor
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glEnable(GL_DEPTH_TEST);
 
-	Shader shader(vertexShaderPath, fragmentShaderPath);
+	Shader shader(g_vertexShaderPath, g_fragmentShaderPath);
 
 	unsigned int VAO, VBO;
 	glGenVertexArrays(1, &VAO);
@@ -117,7 +127,7 @@ int main(){
 
 	//create vbo
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertices), g_vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
  
@@ -169,8 +179,7 @@ int main(){
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(-50.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-	glm::mat4 projection = glm::mat4(1.0f);
-	projection = glm::perspective(glm::radians(45.0f), (float) SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+	camera.setNearPlane(Camera::NearPlane{45.0f, SCR_WIDTH, SCR_HEIGHT, 0.1f, 100.0f});
 
 	shader.use();
 	shader.setInt("texture1", 0);
@@ -197,14 +206,15 @@ int main(){
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
+		camera.setFront(yaw, pitch);
 		shader.setMat4("view", camera.getView());
-		shader.setMat4("projection", projection);
+		shader.setMat4("projection", camera.getProjection());
 
 
 
 		for(int i = 0; i < 10; ++i){
 			model = glm::mat4(1.0f);
-			model = glm::translate(model, cubePositions[i]);
+			model = glm::translate(model, g_cubePositions[i]);
 			model = glm::rotate(model, glm::radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
 			
 			if((i + 1) % 3 == 0){
@@ -255,5 +265,48 @@ void processInput(GLFWwindow* window){
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.setPosition(camera.getPosition() + camera.getRight() * cameraSpeed);
 
+}
+
+
+float g_last_x = SCR_WIDTH / 2.0;
+float g_last_y = SCR_HEIGHT / 2.0;
+
+void mouseCallback(GLFWwindow* window, double pos_x, double pos_y){
+
+	const float sensitivity = 0.1f;
+
+	float x_off = pos_x - g_last_x;
+	float y_off = -(pos_y - g_last_y); // y is reversed
+
+	g_last_x = pos_x;
+	g_last_y = pos_y;
+
+	yaw += x_off * sensitivity;
+	pitch += y_off * sensitivity;
+
+	if(yaw > 180.0f) {
+		yaw -= 360.0f;
+	}
+	else if(yaw < -180.0f) {
+		yaw += 360.0f;
+	}
+
+	if(pitch > 89.0f)
+		pitch = 89.0f;
+
+	else if(pitch < -89.0f)
+		pitch = -89.0f;
+
+	/* std::cout << "x_off: " << x_off<< ", y_off: " << y_off << std::endl; */
+}
+
+void scrollCallback(GLFWwindow* window, double offset_x, double offset_y){
+	/* std::cout << offset_x << ", " << offset_y << std::endl; */
+
+	camera.setFov(camera.getFov() - offset_y);
+	if(camera.getFov() < 1.0f)
+		camera.setFov(1.0f);
+	else if (camera.getFov() > 45.0f)
+		camera.setFov(45.0f);
 }
 
