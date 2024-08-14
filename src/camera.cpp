@@ -229,7 +229,7 @@ int main(){
 
 		//compute delta_time
 		current_time = glfwGetTime();
-		delta_time = prev_time - current_time;
+		delta_time = current_time - prev_time;
 		prev_time = current_time;
 
 		// check call events and swap buffers.
@@ -246,24 +246,39 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height){
 	glViewport(0, 0, width, height);
 }
 
+bool speedy = false;
 void processInput(GLFWwindow* window){
 	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	const float cameraSpeed = 10.5f * delta_time;
+	float cameraSpeed;
+
+	if(speedy)
+		cameraSpeed = 20.0f;
+	else
+		cameraSpeed = 10.0f;
+
+	cameraSpeed *= delta_time;
+
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camera.setPosition(camera.getPosition() + camera.getDirection() * cameraSpeed);
+		camera.setPosition(camera.getPosition() + glm::normalize(camera.getFront()) * cameraSpeed);
 
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera.setPosition(camera.getPosition() - camera.getDirection() * cameraSpeed);
+		camera.setPosition(camera.getPosition() - glm::normalize(camera.getFront()) * cameraSpeed);
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		camera.setPosition(camera.getPosition() - camera.getRight() * cameraSpeed);
 
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.setPosition(camera.getPosition() + camera.getRight() * cameraSpeed);
+
+	if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		speedy = true;
+
+	if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+		speedy = false;
 
 }
 
