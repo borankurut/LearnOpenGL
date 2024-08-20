@@ -28,6 +28,7 @@ include_directories(include)
 # Add src and lib directories
 include_directories(src)
 include_directories(lib)
+include_directories(Objects)
 
 # Gather all source files
 file(GLOB_RECURSE SRC_FILES "src/*.cpp")
