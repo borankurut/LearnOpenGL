@@ -22,11 +22,16 @@ glm::vec3 Camera::getTarget() const{
 
 // no need?
 glm::vec3 Camera::getDirection() const{
-	return glm::normalize(_position - getTarget()); //apparently -_front
+	/* return glm::normalize(_position - getTarget()); //apparently -_front */
+	return glm::normalize(-_front);
 }
 
 glm::vec3 Camera::getRight() const{
+<<<<<<< HEAD
 	return _right;
+=======
+	return glm::normalize(glm::cross(_front, _up));
+>>>>>>> 4173e6f698b089499027eb66369c00d5aab47ff2
 }
 
 void Camera::setPosition(const glm::vec3& position){
