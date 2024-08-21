@@ -9,11 +9,11 @@ uniform mat4 model;
 uniform mat3 normalMatrix;
 
 out vec3 Normal;
-out vec3 ActualFragPos;
+out vec3 ViewFragPos;
 
 void main(){
 	gl_Position = projection * view * model * vec4(aPos, 1.0);
-	ActualFragPos = vec3(model * vec4(aPos, 1.0));
+	ViewFragPos = vec3(view * model * vec4(aPos, 1.0));
 	Normal = normalMatrix * aNormal;
 };
 

@@ -15,8 +15,8 @@ void processInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const char* g_lightingShaderVertPath = "Shaders/lighting_shader.vert";
-const char* g_lightingShaderFragPath = "Shaders/lighting_shader.frag";
+const char* g_lightingShaderVertPath = "Shaders/lighting_shader_view.vert";
+const char* g_lightingShaderFragPath = "Shaders/lighting_shader_view.frag";
 const char* g_lightSourceFragPath = "Shaders/light_source.frag";
 
 float delta_time = 0.0f;
@@ -87,11 +87,9 @@ int main(){
 	// transform matrices
 	glm::mat4 cubeModel = glm::mat4(1.0f);
 	cubeModel = glm::translate(cubeModel, glm::vec3(0.0f, 0.0f, 0.0f));
+	/* glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel))); */
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-	glm::mat4 lightCubeModel = glm::mat4(1.0f);
-	lightCubeModel = glm::translate(cubeModel, lightPos);
-	lightCubeModel = glm::scale(lightCubeModel, glm::vec3(0.2));
 
 	camera.setNearPlane(Camera::NearPlane{45.0f, SCR_WIDTH, SCR_HEIGHT, 0.1f, 100.0f});
 
@@ -101,8 +99,6 @@ int main(){
 	lightingShader.use();
 	lightingShader.setVec3("lightColor", lightColor);
 	lightingShader.setVec3("objectColor", objectColor);
-
-	lightingShader.setVec3("lightPos", lightPos);
 
 
 
@@ -117,13 +113,29 @@ int main(){
 		lightingShader.use();
 		glBindVertexArray(VAO);
 
+
+		/* lightingShader.setVec3("lightPos", lightPos); */
+		lightingShader.setVec3("lightPos", glm::vec3(camera.getView() * glm::vec4(lightPos, 1.0)));
+
+		glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel * camera.getView()))); // view normal.
+
+		lightingShader.setMat3("normalMatrix", cubeNormalMatrix);
+		lightingShader.setVec3("viewPos", camera.getPosition());
 		lightingShader.setMat4("model", cubeModel);
 		lightingShader.setMat4("view", camera.getView());
 		lightingShader.setMat4("projection", camera.getProjection());
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
+		lightPos.x = 2 * sin(current_time);
+		lightPos.y = 2 * cos(current_time);
+
+		glm::mat4 lightCubeModel = glm::mat4(1.0f);
+		lightCubeModel = glm::translate(cubeModel, lightPos);
+		lightCubeModel = glm::scale(lightCubeModel, glm::vec3(0.2));
+
 		lightCubeShader.use();
+
 		lightCubeShader.setMat4("model", lightCubeModel);
 		lightCubeShader.setMat4("view", camera.getView());
 		lightCubeShader.setMat4("projection", camera.getProjection());

@@ -5,10 +5,11 @@ out vec4 FragColor;
 uniform vec3 objectColor;
 uniform vec3 lightColor;
 uniform vec3 lightPos;
-uniform vec3 viewPos;
+
+vec3 ViewPos = vec3(0.0, 0.0, 0.0);
 
 in vec3 Normal;
-in vec3 ActualFragPos;
+in vec3 ViewFragPos;
 
 void main() {
 
@@ -17,7 +18,7 @@ void main() {
 	vec3 ambient = ambientStrength * lightColor;
 
 	//diffuse
-	vec3 lightDir = normalize(lightPos - ActualFragPos); //towards light
+	vec3 lightDir = normalize(lightPos - ViewFragPos); //towards light
 	vec3 norm = normalize(Normal);
 
 	float diff = max(dot(lightDir, norm), 0.0);
@@ -27,7 +28,9 @@ void main() {
 	float specularStrength = 0.5f;
 	vec3 reflectDir = reflect(-lightDir, norm); // -lightDir is towards the fragment.
 												// apperantly it returns normalized if its inputs are normalized, idk math.
-	vec3 viewDir = normalize(viewPos - ActualFragPos);
+												
+	vec3 viewDir = normalize(-ViewFragPos);			// from fragment to camera, since camera is on (0, 0, 0)
+
 	float spec = pow(max(dot(reflectDir, viewDir), 0.0), 32);
 	vec3 specular = specularStrength * spec * lightColor;
 
