@@ -15,8 +15,12 @@ void processInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const char* g_lightingShaderVertPath = "Shaders/lighting_shader_view.vert";
-const char* g_lightingShaderFragPath = "Shaders/lighting_shader_view.frag";
+const char* g_lightingShaderVertPath = "Shaders/lighting_goraud.vert";
+const char* g_lightingShaderFragPath = "Shaders/lighting_goraud.frag";
+
+/* const char* g_lightingShaderVertPath = "Shaders/lighting_shader_view.vert"; */
+/* const char* g_lightingShaderFragPath = "Shaders/lighting_shader_view.frag"; */
+
 const char* g_lightSourceFragPath = "Shaders/light_source.frag";
 
 float delta_time = 0.0f;
@@ -46,6 +50,8 @@ int main(){
 		std::cout << "Failed to initialize the GLAD.\n";
 		return 1;
 	}
+
+	glfwSwapInterval(0);  // Disable V-Sync
 
 	glfwSetWindowUserPointer(window, (void*) &context);
 
@@ -127,8 +133,8 @@ int main(){
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		lightPos.x = 2 * sin(current_time);
-		lightPos.y = 2 * cos(current_time);
+		/* lightPos.x = 2 * sin(current_time); */
+		/* lightPos.y = 2 * cos(current_time); */
 
 		glm::mat4 lightCubeModel = glm::mat4(1.0f);
 		lightCubeModel = glm::translate(cubeModel, lightPos);
@@ -145,6 +151,8 @@ int main(){
 		current_time = glfwGetTime();
 		delta_time = current_time - prev_time;
 		prev_time = current_time;
+
+		std::cout << "Fps:" << 1/delta_time << "\n";
 
 		// check call events and swap buffers.
 		glfwSwapBuffers(window);
