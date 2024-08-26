@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <glm/matrix.hpp>
+#include <light.hpp>
+#include <material.hpp>
 
 class Shader{
 
@@ -20,6 +22,8 @@ public:
 	void setMat3(const std::string& name, glm::mat3 matrix) const;
 	void setMat4(const std::string& name, glm::mat4 matrix) const;
 	void setVec3(const std::string& name, glm::vec3 vec) const;
+	void setLight(const std::string& name, const Light& light) const;
+	void setMaterial(const std::string& name, const Material& material) const;
 
 private:
 	/*empty*/

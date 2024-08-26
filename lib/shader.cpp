@@ -114,4 +114,17 @@ void Shader::setVec3(const std::string& name, glm::vec3 vec) const{
 	glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(vec));
 }
 
+void Shader::setLight(const std::string& name, const Light& light) const{
+	setVec3(name + ".ambient", light.ambient);
+	setVec3(name + ".diffuse", light.diffuse);
+	setVec3(name + ".specular", light.specular);
+	setVec3(name + ".position", light.position);
+}
+
+void Shader::setMaterial(const std::string& name, const Material& material) const{
+	setVec3(name + ".ambient", material.ambient);
+	setVec3(name + ".diffuse", material.diffuse);
+	setVec3(name + ".specular", material.specular);
+	setFloat(name + ".shininess", material.shininess);
+}
 
