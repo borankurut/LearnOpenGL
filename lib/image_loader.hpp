@@ -1,5 +1,6 @@
 #pragma once
 
+// TODO: singleton is shit?
 class ImageLoader{
 
 public:
@@ -7,8 +8,8 @@ public:
 		int width;
 		int height;
 		int nrChannels;
-		float aspectRatio;
-
+		float aspectRatio; // TODO: remove later
+		float getAspectRatio(){return (float) width / (float) height;}
 		unsigned char* data;
 	};
 
@@ -25,6 +26,4 @@ private:
     ImageLoader(const ImageLoader&) = delete;
     ImageLoader& operator=(const ImageLoader&) = delete;
 };
-
-
 
