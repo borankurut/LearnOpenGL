@@ -3,6 +3,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+ImageLoader::ImageLoader(){
+	stbi_set_flip_vertically_on_load(true);
+}
+
 ImageLoader& ImageLoader::get(){
 	static ImageLoader instance;
 	return instance;
@@ -21,7 +25,7 @@ void ImageLoader::freeImage(unsigned char * data) const{
 	stbi_image_free(data);
 }
 
-ImageLoader::ImageLoader(){
-	stbi_set_flip_vertically_on_load(true);
+void ImageLoader::freeImage(const ImageInfo& imageInfo) const{
+	stbi_image_free(imageInfo.data);
 }
 

@@ -18,6 +18,7 @@ public:
 	ImageInfo loadImage(const char *filename, int req_comp) const;
 
 	void freeImage(unsigned char * data) const;
+	void freeImage(const ImageInfo& imageInfo) const;
 
 private:
     ImageLoader();				// Constructor is private
