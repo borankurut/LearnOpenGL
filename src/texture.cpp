@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "shader.hpp"
-#include "image_loader.hpp"
+#include "texture.hpp"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -57,57 +57,16 @@ int main(){
 		1, 2, 3 // second triangle 
 	}; 
 
-	//textures:
+
+	// init textures
 	float ar1[2], ar2[2];
-	unsigned int texture1;	
-	glGenTextures(1, &texture1);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	//params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	Texture texture1("Textures/cami.png", GL_TEXTURE0, GL_RGBA, GL_RGBA);
+	Texture texture2("Textures/celal.png", GL_TEXTURE1, GL_RGBA, GL_RGBA);
+	ar1[0] = 1.0f;
+	ar1[1] = 1.0f / texture1.p_imageInfo.getAspectRatio();
 
-	ImageLoader::ImageInfo camiInfo = ImageLoader::get().loadImage("Textures/cami.png", 0);
-	if(camiInfo.data){
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, camiInfo.width, camiInfo.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, camiInfo.data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		ar1[0] = 1.0f;
-		ar1[1] = 1.0f / camiInfo.aspectRatio; 
-	}
-
-	else{
-		std::cerr << "Couldn't load texture.\n";
-	}
-	ImageLoader::get().freeImage(camiInfo.data);
-	// unbind texture
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	//texture2
-	unsigned int texture2;	
-	glGenTextures(1, &texture2);
-	glBindTexture(GL_TEXTURE_2D, texture2);
-	//params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	ImageLoader::ImageInfo celalInfo = ImageLoader::get().loadImage("Textures/celal.png", 0);
-	if(celalInfo.data){
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, celalInfo.width, celalInfo.height,  0, GL_RGBA, GL_UNSIGNED_BYTE, celalInfo.data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		ar2[0] = 1.0f;
-		ar2[1] = 1.0f / celalInfo.aspectRatio; 
-
-	}
-
-	else{
-		std::cerr << "Couldn't load texture.\n";
-	}
-	ImageLoader::get().freeImage(celalInfo.data);
-	// unbind texture
-	glBindTexture(GL_TEXTURE_2D, 0);
+	ar2[0] = 1.0f;
+	ar2[1] = 1.0f / texture2.p_imageInfo.getAspectRatio();
 
 	//init object
 	//create the VAOs and VBOs
@@ -141,16 +100,12 @@ int main(){
 
 
 	shader.use();
-	shader.setInt("texture1", 0);
-	shader.setInt("texture2", 1);
+
+	texture1.use("texture1", shader);
+	texture2.use("texture2", shader);
 
 	glUniform2f(glGetUniformLocation(shader.ID, "aspectRatio1"), ar1[0], ar1[1]);
 	glUniform2f(glGetUniformLocation(shader.ID, "aspectRatio2"), ar2[0], ar2[1]);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texture2);
 
 	while(!glfwWindowShouldClose(window)){
 		//input

@@ -1,0 +1,11 @@
+
+
+
+Diffuse specular texture map chapter:
+
+	*	Shaders	
+
+	*	Texture class
+
+	*	Base code
+
