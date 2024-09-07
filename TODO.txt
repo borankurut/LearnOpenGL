@@ -3,9 +3,7 @@
 
 Diffuse specular texture map chapter:
 
-	*	Shaders	
+		*	Update material class to handle the texture materials, with 2 textures
+		diffuse and specular and then a shininess float.
 
-	*	Texture class
-
-	*	Base code
 

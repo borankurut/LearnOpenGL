@@ -9,16 +9,17 @@
 #include "cube.hpp"
 #include "material.hpp"
 #include "light.hpp"
+#include "texture.hpp"
 #include "utils.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 
-const char* g_lightingShaderVertPath = "Shaders/lighting_material_shader.vert";
-const char* g_lightingShaderFragPath = "Shaders/lighting_material_shader.frag";
+const char* g_lightingShaderVertPath = "Shaders/light_map.vert";
+const char* g_lightingShaderFragPath = "Shaders/light_map.frag";
 
 const char* g_lightSourceFragPath = "Shaders/light_source_v2.frag";
 
@@ -98,12 +99,6 @@ int main(){
 	light.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
 	light.specular = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	Material material;
-	material.ambient = glm::vec3(0.24725f, 0.1995f, 0.0745f);
-	material.diffuse= glm::vec3(0.75164f, 0.60648f, 0.22648f);
-	material.specular = glm::vec3(0.628281f, 0.555802f, 0.366065f);
-	material.shininess = 51.2f;
-
 	camera.setNearPlane(Camera::NearPlane{45.0f, SCR_WIDTH, SCR_HEIGHT, 0.1f, 100.0f});
 
 	double prev_time = glfwGetTime();
@@ -111,7 +106,14 @@ int main(){
 
 	lightingShader.use();
 	lightingShader.setLight("light", light);
-	lightingShader.setMaterial("material", material);
+
+	Texture diffuseTexture = Texture("Textures/container2.png", GL_TEXTURE0, GL_RGBA, GL_RGBA);
+
+	Texture specularTexture = Texture("Textures/container2_specular.png", GL_TEXTURE1, GL_RGBA, GL_RGBA);
+
+	diffuseTexture.use("material.diffuse", lightingShader);
+	specularTexture.use("material.specular", lightingShader);
+	lightingShader.setFloat("material.shininess", 32.0f);
 
 	while(!glfwWindowShouldClose(window)){
 		//input
