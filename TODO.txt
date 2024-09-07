@@ -6,4 +6,6 @@ Diffuse specular texture map chapter:
 		*	Update material class to handle the texture materials, with 2 textures
 		diffuse and specular and then a shininess float.
 
+Light chapter:
+		*	Implement directional and point light, research about .w == 0
 
