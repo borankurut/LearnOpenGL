@@ -111,8 +111,11 @@ int main(){
 
 	Texture specularTexture = Texture("Textures/container2_specular.png", GL_TEXTURE1, GL_RGBA, GL_RGBA);
 
+	Texture emmisionTexture = Texture("Textures/emmisionTexture.png", GL_TEXTURE2, GL_RGBA, GL_RGBA);
+
 	diffuseTexture.use("material.diffuse", lightingShader);
 	specularTexture.use("material.specular", lightingShader);
+	emmisionTexture.use("material.emmisionMap", lightingShader);
 	lightingShader.setFloat("material.shininess", 32.0f);
 
 	while(!glfwWindowShouldClose(window)){
@@ -157,7 +160,7 @@ int main(){
 		delta_time = current_time - prev_time;
 		prev_time = current_time;
 
-		/* std::cout << "Fps:" << 1/delta_time << "\n"; */
+		std::cout << "Fps:" << 1/delta_time << "\n";
 
 		// check call events and swap buffers.
 		glfwSwapBuffers(window);
