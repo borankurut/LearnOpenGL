@@ -5,7 +5,7 @@ layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
 
 struct Light{
-	vec3 position;
+	vec4 position_or_direction;
 
 	vec3 ambient;
 	vec3 diffuse;
@@ -33,7 +33,7 @@ void main(){
 	LightView.diffuse = light.diffuse;
 	LightView.specular = light.specular;
 
-    vec4 lightPositionView = view * vec4(light.position, 1.0);
-    LightView.position = lightPositionView.xyz;
+    vec4 lightPositionView = view * light.position_or_direction; 
+    LightView.position_or_direction = lightPositionView.xyzw;
 };
 

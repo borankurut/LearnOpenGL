@@ -11,7 +11,7 @@ struct Material{
 };
 
 struct Light{
-	vec3 position;
+	vec4 position_or_direction;
 
 	vec3 ambient;
 	vec3 diffuse;
@@ -29,8 +29,15 @@ void main(){
 	//ambient
 	vec3 ambient = LightView.ambient * vec3(texture(material.diffuse, TexCoords));
 
+	// calculate lightDir based on light type.
+	vec3 lightDir;
+
+	if(LightView.position_or_direction.w == 0.0f)
+		lightDir = normalize(LightView.position_or_direction.xyz);
+	else
+		lightDir = normalize(LightView.position_or_direction.xyz - ViewFragPos);
+
 	//diffuse
-	vec3 lightDir = normalize(LightView.position - ViewFragPos);
 	vec3 norm = normalize(Normal);
 
 	float diff = max(dot(lightDir, norm), 0.0);

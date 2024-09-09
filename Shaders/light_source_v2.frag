@@ -3,7 +3,7 @@
 out vec4 FragColor;
 
 struct Light{
-	vec3 position;
+	vec4 position_or_direction;
 
 	vec3 ambient;
 	vec3 diffuse;

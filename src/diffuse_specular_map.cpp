@@ -94,7 +94,7 @@ int main(){
 	/* glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel))); */
 
 	Light light;
-	light.position = glm::vec3(1.2f, 1.0f, 2.0f);
+	light.position_or_direction = glm::vec4(1.2f, 1.0f, 2.0f, 1.0f);
 	light.ambient = glm::vec3(0.2f, 0.2f, 0.2f);
 	light.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
 	light.specular = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -140,11 +140,11 @@ int main(){
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		light.position.x = 2 * sin(current_time);
-		light.position.y = 2 * cos(current_time);
+		light.position_or_direction.x = 2 * sin(current_time);
+		light.position_or_direction.y = 2 * cos(current_time);
 
 		glm::mat4 lightCubeModel = glm::mat4(1.0f);
-		lightCubeModel = glm::translate(cubeModel, light.position);
+		lightCubeModel = glm::translate(cubeModel, light.position());
 		lightCubeModel = glm::scale(lightCubeModel, glm::vec3(0.2));
 
 		lightCubeShader.use();
@@ -160,7 +160,7 @@ int main(){
 		delta_time = current_time - prev_time;
 		prev_time = current_time;
 
-		std::cout << "Fps:" << 1/delta_time << "\n";
+		/* std::cout << "Fps:" << 1/delta_time << "\n"; */
 
 		// check call events and swap buffers.
 		glfwSwapBuffers(window);
