@@ -33,7 +33,7 @@ void main(){
 	vec3 lightDir;
 
 	if(LightView.position_or_direction.w == 0.0f)
-		lightDir = normalize(LightView.position_or_direction.xyz);
+		lightDir = normalize(-LightView.position_or_direction.xyz);
 	else
 		lightDir = normalize(LightView.position_or_direction.xyz - ViewFragPos);
 
