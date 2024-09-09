@@ -5,9 +5,9 @@ Diffuse specular texture map chapter:
 			with 2 textures diffuse and specular and then a shininess float.
 
 Light chapter:
-		[ ] Implement directional light
+		[x] Implement directional light
+
+		[x] Research about .w == 0
 
 		[ ] Implement point light
-
-		[ ] Research about .w == 0
 
