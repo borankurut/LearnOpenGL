@@ -27,3 +27,9 @@ struct Light{
 	inline bool isDirectional(){return position_or_direction.w == 0.0f;}
 };
 
+struct PointLight : public Light{
+	float constant;
+	float linear;
+	float quadratic;
+};
+
