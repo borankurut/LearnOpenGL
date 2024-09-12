@@ -9,5 +9,9 @@ Light chapter:
 
 		[x] Research about .w == 0
 
-		[ ] Implement point light
+		[X] Implement point light
+
+		[ ] Implement spot light
+
+
 
