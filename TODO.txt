@@ -12,6 +12,5 @@ Light chapter:
 		[X] Implement point light
 
 		[ ] Implement spot light
-
-
+			(can't implement it so, make the shader world space, try again.)
 

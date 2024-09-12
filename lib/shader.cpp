@@ -134,6 +134,18 @@ void Shader::setPointLight(const std::string& name, const PointLight& light) con
 	setFloat(name + ".quadratic", light.quadratic);
 }
 
+void Shader::setSpotLight(const std::string& name, const SpotLight& light) const{
+	setVec3(name + ".ambient", light.ambient);
+	setVec3(name + ".diffuse", light.diffuse);
+	setVec3(name + ".specular", light.specular);
+	setVec4(name + ".position_or_direction", light.position_or_direction);
+	setFloat(name + ".constant", light.constant);
+	setFloat(name + ".linear", light.linear);
+	setFloat(name + ".quadratic", light.quadratic);
+	setVec3(name + ".direction", light.direction);
+	setFloat(name + ".cutOff", light.cutOff);
+}
+
 void Shader::setMaterial(const std::string& name, const Material& material) const{
 	setVec3(name + ".ambient", material.ambient);
 	setVec3(name + ".diffuse", material.diffuse);

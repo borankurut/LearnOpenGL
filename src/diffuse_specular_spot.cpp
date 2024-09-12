@@ -18,11 +18,8 @@ void processInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 1920;
 const unsigned int SCR_HEIGHT = 1080;
 
-const char* g_lightingShaderVertPath = "Shaders/point_light.vert";
-const char* g_lightingShaderFragPath = "Shaders/point_light.frag";
-
-const char* g_lightSourceVertPath = "Shaders/light_source_v2.vert";
-const char* g_lightSourceFragPath = "Shaders/light_source_v2.frag";
+const char* g_lightingShaderVertPath = "Shaders/spot_light.vert";
+const char* g_lightingShaderFragPath = "Shaders/spot_light.frag";
 
 float delta_time = 0.0f;
 
@@ -66,7 +63,6 @@ int main(){
 	glEnable(GL_DEPTH_TEST);
 
 	Shader lightingShader(g_lightingShaderVertPath, g_lightingShaderFragPath);
-	Shader lightCubeShader(g_lightSourceVertPath, g_lightSourceFragPath);
 
 	unsigned int VAO, VBO;
 	glGenVertexArrays(1, &VAO);
@@ -94,7 +90,7 @@ int main(){
 	cubeModel = glm::translate(cubeModel, glm::vec3(0.0f, 0.0f, 0.0f));
 	/* glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel))); */
 
-	PointLight light;
+	SpotLight light;
 	light.position_or_direction = glm::vec4(1.2f, 1.0f, 2.0f, 1.0f);
 	light.ambient = glm::vec3(0.2f, 0.2f, 0.2f);
 	light.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -103,6 +99,9 @@ int main(){
 	light.constant = 1.0f;
 	light.linear = 0.09f;
 	light.quadratic = 0.032f;
+
+	light.direction = camera.getFront();
+	light.cutOff = glm::cos(glm::radians(12.5f));
 
 	camera.setNearPlane(Camera::NearPlane{45.0f, SCR_WIDTH, SCR_HEIGHT, 0.1f, 100.0f});
 
@@ -147,26 +146,16 @@ int main(){
 			lightingShader.setMat4("model", cubeModel);
 			lightingShader.setMat4("view", camera.getView());
 			lightingShader.setMat4("projection", camera.getProjection());
-			lightingShader.setPointLight("light", light);
+			lightingShader.setSpotLight("light", light);
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-		/* light.position_or_direction.x = 2 * sin(current_time); */
-		/* light.position_or_direction.y = 2 * cos(current_time); */
 		light.position_or_direction = glm::vec4(camera.getPosition(), 1.0f);
 
-		glm::mat4 lightCubeModel = glm::mat4(1.0f);
-		lightCubeModel = glm::translate(cubeModel, light.position());
-		lightCubeModel = glm::scale(lightCubeModel, glm::vec3(0.2));
-
-		lightCubeShader.use();
-
-		lightCubeShader.setMat4("model", lightCubeModel);
-		lightCubeShader.setMat4("view", camera.getView());
-		lightCubeShader.setMat4("projection", camera.getProjection());
-		lightCubeShader.setLight("light", light);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		// this is because we use view space in the shader, TODO: THIS IS SHIT, GET RID OF THIS.
+		light.direction = glm::vec3(camera.getView() * glm::vec4(camera.getFront(), 1.0f));
+		/* light.direction = camera.getFront(); */
 
 		//compute delta_time
 		current_time = glfwGetTime();
@@ -207,10 +196,5 @@ void processInput(GLFWwindow* window){
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		camera.setPosition(camera.getPosition() + camera.getUp() * speed);
-
-	// further debugging, make the light source spawn to the current camera position when c is pressed.
-	/* if(glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) */
-	/* 	light.position_or_direction = glm::vec4(camera.getPosition(), 1.0f); */
-
 }
 
