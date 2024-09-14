@@ -88,7 +88,7 @@ int main(){
 	// transform matrices
 	glm::mat4 cubeModel = glm::mat4(1.0f);
 	cubeModel = glm::translate(cubeModel, glm::vec3(0.0f, 0.0f, 0.0f));
-	/* glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel))); */
+	glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel)));
 
 	SpotLight light;
 	light.position_or_direction = glm::vec4(1.2f, 1.0f, 2.0f, 1.0f);
@@ -110,6 +110,7 @@ int main(){
 
 	lightingShader.use();
 	lightingShader.setLight("light", light);
+	lightingShader.setMat3("normalMatrix", cubeNormalMatrix);
 
 	Texture diffuseTexture = Texture("Textures/container2.png", GL_TEXTURE0, GL_RGBA, GL_RGBA);
 
@@ -137,11 +138,7 @@ int main(){
 			// transform matrices
 			glm::mat4 cubeModel = glm::mat4(1.0f);
 			cubeModel = glm::translate(cubeModel, cubePositions[i]);
-			/* glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel))); */
 
-			glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel * camera.getView()))); // view normal.
-
-			lightingShader.setMat3("normalMatrix", cubeNormalMatrix);
 			lightingShader.setVec3("viewPos", camera.getPosition());
 			lightingShader.setMat4("model", cubeModel);
 			lightingShader.setMat4("view", camera.getView());
@@ -153,9 +150,10 @@ int main(){
 
 		light.position_or_direction = glm::vec4(camera.getPosition(), 1.0f);
 
-		// this is because we use view space in the shader, TODO: THIS IS SHIT, GET RID OF THIS.
-		light.direction = glm::vec3(camera.getView() * glm::vec4(camera.getFront(), 1.0f));
-		/* light.direction = camera.getFront(); */
+		light.direction = glm::normalize(camera.getFront());
+
+		/* printVec3(light.direction); */
+		/* std::cout << std::endl; */
 
 		//compute delta_time
 		current_time = glfwGetTime();

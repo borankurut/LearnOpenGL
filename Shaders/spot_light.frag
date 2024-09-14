@@ -1,5 +1,7 @@
 #version 330 core
 
+/* This shader use world space coordinates, not view space. TODO: Research to implement this in view space.*/
+
 out vec4 FragColor;
 
 struct Material{
@@ -26,47 +28,43 @@ struct Light{
 };
 
 uniform Material material;
+uniform Light light;
+uniform vec3 viewPosition;
 
-in Light LightView;
 in vec3 Normal;
-in vec3 ViewFragPos;
+in vec3 FragPos;
 in vec2 TexCoords;
 
 void main(){
 	//ambient
-	vec3 ambient = LightView.ambient * vec3(texture(material.diffuse, TexCoords));
+	vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
 
-	vec3 lightDir = normalize(LightView.position_or_direction.xyz - ViewFragPos);
+	vec3 lightDir = normalize(light.position_or_direction.xyz - FragPos);
 
-	float theta = dot(lightDir, normalize(-LightView.direction));
+	float theta = dot(lightDir, normalize(-light.direction));
 
-	if(true){
-		FragColor = vec4(theta, theta, theta, 1.0f);
+	if (theta < light.cutOff){
+		FragColor = vec4(light.ambient * vec3(texture(material.diffuse, TexCoords)), 1.0);
+		
+		FragColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		return;
 	}
 
-	// if (theta < LightView.cutOff){
-	// 	FragColor = vec4(LightView.ambient * vec3(texture(material.diffuse, TexCoords)), 1.0);
-	// 	
-	// 	FragColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	// 	return;
-	// }
-
 	//calculate the attenuation:
-	float distance = length(LightView.position_or_direction.xyz - ViewFragPos); // TODO view mode length valid or not?
-	float attenuation = 1.0 / (LightView.constant + LightView.linear * distance + LightView.quadratic * distance * distance);
+	float distance = length(light.position_or_direction.xyz - FragPos); // TODO view mode length valid or not?
+	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * distance * distance);
 
 	//diffuse
 	vec3 norm = normalize(Normal);
 
 	float diff = max(dot(lightDir, norm), 0.0);
-	vec3 diffuse = diff * LightView.diffuse * vec3(texture(material.diffuse, TexCoords));
+	vec3 diffuse = diff * light.diffuse * vec3(texture(material.diffuse, TexCoords));
 
 	//specular
 	vec3 reflectDir = reflect(-lightDir, norm);
-	vec3 viewDir = normalize(-ViewFragPos);
+	vec3 viewDir = normalize(viewPosition - FragPos);
 	float spec = pow(max(dot(reflectDir, viewDir), 0.0), material.shininess);
-	vec3 specular = spec * LightView.specular * vec3(texture(material.specular, TexCoords));
+	vec3 specular = spec * light.specular * vec3(texture(material.specular, TexCoords));
 
 	// TODO: disable emmision if emmision map is not set. research this.
 	//emmision
