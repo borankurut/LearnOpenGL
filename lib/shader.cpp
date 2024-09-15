@@ -144,6 +144,7 @@ void Shader::setSpotLight(const std::string& name, const SpotLight& light) const
 	setFloat(name + ".quadratic", light.quadratic);
 	setVec3(name + ".direction", light.direction);
 	setFloat(name + ".cutOff", light.cutOff);
+	setFloat(name + ".outerCutOff", light.outerCutOff);
 }
 
 void Shader::setMaterial(const std::string& name, const Material& material) const{

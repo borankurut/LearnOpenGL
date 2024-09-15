@@ -36,5 +36,6 @@ struct PointLight : public Light{
 struct SpotLight : public PointLight{
 	glm::vec3 direction;
 	float cutOff;
+	float outerCutOff;
 };
 
