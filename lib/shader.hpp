@@ -25,6 +25,8 @@ public:
 	void setVec4(const std::string& name, glm::vec4 vec) const;
 	void setLight(const std::string& name, const Light& light) const;
 	void setPointLight(const std::string& name, const PointLight& light) const;
+	void setPointLightInArray(const std::string& arrayName, const PointLight& light, int index) const;
+	void setPointLights(const std::string& arrayName, std::vector<PointLight> lights) const;
 	void setSpotLight(const std::string& name, const SpotLight& light) const;
 	void setMaterial(const std::string& name, const Material& material) const;
 

@@ -134,6 +134,24 @@ void Shader::setPointLight(const std::string& name, const PointLight& light) con
 	setFloat(name + ".quadratic", light.quadratic);
 }
 
+void Shader::setPointLightInArray(const std::string& arrayName, const PointLight& light, int index) const{
+	setVec3(arrayName + "[" + std::to_string(index) + "]" + ".ambient", light.ambient);
+	setVec3(arrayName + "[" + std::to_string(index) + "]" + ".diffuse", light.diffuse);
+	setVec3(arrayName + "[" + std::to_string(index) + "]" + ".specular", light.specular);
+	setVec4(arrayName + "[" + std::to_string(index) + "]" + ".position_or_direction", light.position_or_direction); // TODO: this is shit.
+	// TODO: get rid of the whole position_or_direction thing.
+	
+	setFloat(arrayName + "[" + std::to_string(index) + "]" + ".constant", light.constant);
+	setFloat(arrayName + "[" + std::to_string(index) + "]" + ".linear", light.linear);
+	setFloat(arrayName + "[" + std::to_string(index) + "]" + ".quadratic", light.quadratic);
+}
+
+void Shader::setPointLights(const std::string& arrayName, std::vector<PointLight> lights) const{
+	for(int i = 0; i < lights.size(); ++i){
+		setPointLightInArray(arrayName, lights[i], i);
+	}
+}
+
 void Shader::setSpotLight(const std::string& name, const SpotLight& light) const{
 	setVec3(name + ".ambient", light.ambient);
 	setVec3(name + ".diffuse", light.diffuse);
