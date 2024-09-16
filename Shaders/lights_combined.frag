@@ -65,28 +65,15 @@ vec3 CalculateDirectionalLight(DirLight dirLight, vec3 normal, vec3 viewDir);
 vec3 CalculatePointLight(PointLight pointLight, vec3 normal, vec3 viewDir);
 vec3 CalculateSpotLight(SpotLight spotLight, vec3 normal, vec3 viewDir);
 vec3 FixMinusVec3(vec3 vec);
+vec3 ShadeLight();
+vec3 ShadeLightFixNullLights();
 
 void main(){
 
-	vec3 normal = normalize(Normal);
-	vec3 viewDir = normalize(viewPosition - FragPos);
-
-	// vec3 result = CalculateDirectionalLight(dirLight, normal, viewDir);
-	//
-	// for(int i = 0; i < PointLightAmount; ++i)
-	// 	result += CalculatePointLight(pointLights[i], normal, viewDir);
-	//
-	// result += CalculateSpotLight(spotLight, normal, viewDir);
-	
-	vec3 result = FixMinusVec3(CalculateDirectionalLight(dirLight, normal, viewDir));
-
-	for(int i = 0; i < PointLightAmount; ++i)
-		result += FixMinusVec3(CalculatePointLight(pointLights[i], normal, viewDir));
-
-	result += FixMinusVec3(CalculateSpotLight(spotLight, normal, viewDir));
+	// vec3 result = ShadeLight();
+	vec3 result = ShadeLightFixNullLights();
 
 	FragColor = vec4(result, 1.0);
-	// FragColor = vec4(CalculatePointLight(pointLights[0], normal, viewDir), 1.0);
 }
 
 vec3 CalculateDirectionalLight(DirLight dirLight, vec3 normal, vec3 viewDir){
@@ -161,3 +148,30 @@ vec3 FixMinusVec3(vec3 vec){
 	return vec3(max(vec.x, 0.0), max(vec.y, 0.0), max(vec.z, 0.0));
 }
 
+vec3 ShadeLight(){
+	vec3 normal = normalize(Normal);
+	vec3 viewDir = normalize(viewPosition - FragPos);
+
+	vec3 result = CalculateDirectionalLight(dirLight, normal, viewDir);
+
+	for(int i = 0; i < PointLightAmount; ++i)
+		result += CalculatePointLight(pointLights[i], normal, viewDir);
+
+	result += CalculateSpotLight(spotLight, normal, viewDir);
+
+	return result;
+}
+
+vec3 ShadeLightFixNullLights(){
+	vec3 normal = normalize(Normal);
+	vec3 viewDir = normalize(viewPosition - FragPos);
+
+	vec3 result = FixMinusVec3(CalculateDirectionalLight(dirLight, normal, viewDir));
+
+	for(int i = 0; i < PointLightAmount; ++i)
+		result += FixMinusVec3(CalculatePointLight(pointLights[i], normal, viewDir));
+
+	result += FixMinusVec3(CalculateSpotLight(spotLight, normal, viewDir));
+
+	return result;
+}
