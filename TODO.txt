@@ -11,6 +11,8 @@ Light chapter:
 
 		[X] Implement point light
 
-		[ ] Implement spot light
+		[x] Implement spot light
 			(can't implement it so, make the shader world space, try again.)
+
+		[ ] Implement all light functionality in single program.
 

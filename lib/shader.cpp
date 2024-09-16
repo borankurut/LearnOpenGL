@@ -124,7 +124,25 @@ void Shader::setLight(const std::string& name, const Light& light) const{
 	setVec3(name + ".specular", light.specular);
 	setVec4(name + ".position_or_direction", light.position_or_direction);
 }
+
+void Shader::setDirLight(const std::string& name, const Light& light) const{
+	if(light.position_or_direction.w != 0.0f){
+		std::cerr << "Trying to set a directional light that its w is not 0.\n";
+		return;
+	}
+
+	setVec3(name + ".ambient", light.ambient);
+	setVec3(name + ".diffuse", light.diffuse);
+	setVec3(name + ".specular", light.specular);
+	setVec4(name + ".position_or_direction", light.position_or_direction);
+}
+
 void Shader::setPointLight(const std::string& name, const PointLight& light) const{
+	if(light.position_or_direction.w == 0.0f){
+		std::cerr << "Trying to set a point light that its w is 0.\n";
+		return;
+	}
+
 	setVec3(name + ".ambient", light.ambient);
 	setVec3(name + ".diffuse", light.diffuse);
 	setVec3(name + ".specular", light.specular);
@@ -134,21 +152,14 @@ void Shader::setPointLight(const std::string& name, const PointLight& light) con
 	setFloat(name + ".quadratic", light.quadratic);
 }
 
-void Shader::setPointLightInArray(const std::string& arrayName, const PointLight& light, int index) const{
-	setVec3(arrayName + "[" + std::to_string(index) + "]" + ".ambient", light.ambient);
-	setVec3(arrayName + "[" + std::to_string(index) + "]" + ".diffuse", light.diffuse);
-	setVec3(arrayName + "[" + std::to_string(index) + "]" + ".specular", light.specular);
-	setVec4(arrayName + "[" + std::to_string(index) + "]" + ".position_or_direction", light.position_or_direction); // TODO: this is shit.
-	// TODO: get rid of the whole position_or_direction thing.
-	
-	setFloat(arrayName + "[" + std::to_string(index) + "]" + ".constant", light.constant);
-	setFloat(arrayName + "[" + std::to_string(index) + "]" + ".linear", light.linear);
-	setFloat(arrayName + "[" + std::to_string(index) + "]" + ".quadratic", light.quadratic);
+void Shader::setPointLightInArray(const std::string& arrayName, int index, const PointLight& light) const{
+	std::string toSetName = arrayName + "[" + std::to_string(index) + "]";
+	setPointLight(toSetName, light);
 }
 
 void Shader::setPointLights(const std::string& arrayName, std::vector<PointLight> lights) const{
 	for(int i = 0; i < lights.size(); ++i){
-		setPointLightInArray(arrayName, lights[i], i);
+		setPointLightInArray(arrayName, i, lights[i]);
 	}
 }
 
