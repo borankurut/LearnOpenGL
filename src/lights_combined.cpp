@@ -21,6 +21,9 @@ const unsigned int SCR_HEIGHT = 1080;
 const char* g_lightingShaderVertPath = "Shaders/lights_combined.vert";
 const char* g_lightingShaderFragPath = "Shaders/lights_combined.frag";
 
+const char* g_lightSourceVertPath = "Shaders/light_source_v2.vert";
+const char* g_lightSourceFragPath = "Shaders/light_source_v2.frag";
+
 float delta_time = 0.0f;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
@@ -63,6 +66,7 @@ int main(){
 	glEnable(GL_DEPTH_TEST);
 
 	Shader lightingShader(g_lightingShaderVertPath, g_lightingShaderFragPath);
+	Shader lightCubeShader(g_lightSourceVertPath, g_lightSourceFragPath);
 
 	unsigned int VAO, VBO;
 	glGenVertexArrays(1, &VAO);
@@ -90,19 +94,24 @@ int main(){
 	cubeModel = glm::translate(cubeModel, glm::vec3(0.0f, 0.0f, 0.0f));
 	glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel)));
 
-	SpotLight spotLight;
-	spotLight.position_or_direction = glm::vec4(1.2f, 1.0f, 2.0f, 1.0f);
-	spotLight.ambient = glm::vec3(0.2f, 0.2f, 0.2f);
-	spotLight.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-	spotLight.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+	SpotLight spotLight(glm::vec4(1.2f, 1.0f, 2.0f, 1.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f,0.5f,0.5f), 
+			glm::vec3(1.0f, 1.0f, 1.0f), 1.0f, 0.09f, 0.032f, camera.getFront(), glm::cos(glm::radians(12.5f)), glm::cos(glm::radians(17.5f)));
 
-	spotLight.constant = 1.0f;
-	spotLight.linear = 0.09f;
-	spotLight.quadratic = 0.032f;
+	std::vector<PointLight> pointLights(4);
+	glm::vec3 pointLightPositions[] = { 
+		glm::vec3( 0.7f, 0.2f, 2.0f), 
+		glm::vec3( 2.3f, -3.3f, -4.0f), 
+		glm::vec3(-4.0f, 2.0f, -12.0f), 
+		glm::vec3( 0.0f, 0.0f, -3.0f) 
+	}; 
 
-	spotLight.direction = camera.getFront();
-	spotLight.cutOff = glm::cos(glm::radians(12.5f));
-	spotLight.outerCutOff = glm::cos(glm::radians(17.5f));
+
+	for(int i = 0; i < 4; ++i){
+		pointLights[i] = PointLight::defaultPointLight;
+		pointLights[i].m_position_or_direction = glm::vec4(pointLightPositions[i], 1.0f);
+	}
+
+	Light directionalLight(glm::vec4(0.2f, -1.0f, 0.5f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 1.0f));
 
 	camera.setNearPlane(Camera::NearPlane{45.0f, SCR_WIDTH, SCR_HEIGHT, 0.1f, 100.0f});
 
@@ -112,6 +121,8 @@ int main(){
 	lightingShader.use();
 	lightingShader.setMat3("normalMatrix", cubeNormalMatrix);
 	lightingShader.setSpotLight("spotLight", spotLight);
+	lightingShader.setPointLights("pointLights", pointLights);
+	lightingShader.setDirLight("dirLight", directionalLight);
 
 	Texture diffuseTexture = Texture("Textures/container2.png", GL_TEXTURE0, GL_RGBA, GL_RGBA);
 
@@ -140,7 +151,7 @@ int main(){
 			glm::mat4 cubeModel = glm::mat4(1.0f);
 			cubeModel = glm::translate(cubeModel, cubePositions[i]);
 
-			lightingShader.setVec3("viewPos", camera.getPosition());
+			lightingShader.setVec3("viewPosition", camera.getPosition());
 			lightingShader.setMat4("model", cubeModel);
 			lightingShader.setMat4("view", camera.getView());
 			lightingShader.setMat4("projection", camera.getProjection());
@@ -149,9 +160,24 @@ int main(){
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-		spotLight.position_or_direction = glm::vec4(camera.getPosition(), 1.0f);
+		spotLight.m_position_or_direction = glm::vec4(camera.getPosition(), 1.0f);
 
-		spotLight.direction = glm::normalize(camera.getFront());
+		spotLight.m_direction = glm::normalize(camera.getFront());
+
+		lightCubeShader.use();
+
+		for(int i = 0; i < 4; ++i){
+			glm::mat4 lightCubeModel = glm::mat4(1.0f);
+			lightCubeModel = glm::translate(lightCubeModel, pointLightPositions[i]);
+			lightCubeModel = glm::scale(lightCubeModel, glm::vec3(0.2));
+			lightCubeShader.setMat4("model", lightCubeModel);
+			lightCubeShader.setMat4("view", camera.getView());
+			lightCubeShader.setMat4("projection", camera.getProjection());
+			lightCubeShader.setLight("light", pointLights[i]);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+
+
 
 		/* printVec3(light.direction); */
 		/* std::cout << std::endl; */

@@ -119,37 +119,37 @@ void Shader::setVec4(const std::string& name, glm::vec4 vec) const{
 }
 
 void Shader::setLight(const std::string& name, const Light& light) const{
-	setVec3(name + ".ambient", light.ambient);
-	setVec3(name + ".diffuse", light.diffuse);
-	setVec3(name + ".specular", light.specular);
-	setVec4(name + ".position_or_direction", light.position_or_direction);
+	setVec3(name + ".ambient", light.m_ambient);
+	setVec3(name + ".diffuse", light.m_diffuse);
+	setVec3(name + ".specular", light.m_specular);
+	setVec4(name + ".position_or_direction", light.m_position_or_direction);
 }
 
 void Shader::setDirLight(const std::string& name, const Light& light) const{
-	if(light.position_or_direction.w != 0.0f){
+	if(light.m_position_or_direction.w != 0.0f){
 		std::cerr << "Trying to set a directional light that its w is not 0.\n";
 		return;
 	}
 
-	setVec3(name + ".ambient", light.ambient);
-	setVec3(name + ".diffuse", light.diffuse);
-	setVec3(name + ".specular", light.specular);
-	setVec4(name + ".position_or_direction", light.position_or_direction);
+	setVec3(name + ".ambient", light.m_ambient);
+	setVec3(name + ".diffuse", light.m_diffuse);
+	setVec3(name + ".specular", light.m_specular);
+	setVec4(name + ".position_or_direction", light.m_position_or_direction);
 }
 
 void Shader::setPointLight(const std::string& name, const PointLight& light) const{
-	if(light.position_or_direction.w == 0.0f){
+	if(light.m_position_or_direction.w == 0.0f){
 		std::cerr << "Trying to set a point light that its w is 0.\n";
 		return;
 	}
 
-	setVec3(name + ".ambient", light.ambient);
-	setVec3(name + ".diffuse", light.diffuse);
-	setVec3(name + ".specular", light.specular);
-	setVec4(name + ".position_or_direction", light.position_or_direction);
-	setFloat(name + ".constant", light.constant);
-	setFloat(name + ".linear", light.linear);
-	setFloat(name + ".quadratic", light.quadratic);
+	setVec3(name + ".ambient", light.m_ambient);
+	setVec3(name + ".diffuse", light.m_diffuse);
+	setVec3(name + ".specular", light.m_specular);
+	setVec4(name + ".position_or_direction", light.m_position_or_direction);
+	setFloat(name + ".constant", light.m_constant);
+	setFloat(name + ".linear", light.m_linear);
+	setFloat(name + ".quadratic", light.m_quadratic);
 }
 
 void Shader::setPointLightInArray(const std::string& arrayName, int index, const PointLight& light) const{
@@ -164,16 +164,16 @@ void Shader::setPointLights(const std::string& arrayName, std::vector<PointLight
 }
 
 void Shader::setSpotLight(const std::string& name, const SpotLight& light) const{
-	setVec3(name + ".ambient", light.ambient);
-	setVec3(name + ".diffuse", light.diffuse);
-	setVec3(name + ".specular", light.specular);
-	setVec4(name + ".position_or_direction", light.position_or_direction);
-	setFloat(name + ".constant", light.constant);
-	setFloat(name + ".linear", light.linear);
-	setFloat(name + ".quadratic", light.quadratic);
-	setVec3(name + ".direction", light.direction);
-	setFloat(name + ".cutOff", light.cutOff);
-	setFloat(name + ".outerCutOff", light.outerCutOff);
+	setVec3(name + ".ambient", light.m_ambient);
+	setVec3(name + ".diffuse", light.m_diffuse);
+	setVec3(name + ".specular", light.m_specular);
+	setVec4(name + ".position_or_direction", light.m_position_or_direction);
+	setFloat(name + ".constant", light.m_constant);
+	setFloat(name + ".linear", light.m_linear);
+	setFloat(name + ".quadratic", light.m_quadratic);
+	setVec3(name + ".direction", light.m_direction);
+	setFloat(name + ".cutOff", light.m_cutOff);
+	setFloat(name + ".outerCutOff", light.m_outerCutOff);
 }
 
 void Shader::setMaterial(const std::string& name, const Material& material) const{

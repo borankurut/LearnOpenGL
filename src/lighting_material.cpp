@@ -91,10 +91,10 @@ int main(){
 	/* glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel))); */
 
 	Light light;
-	light.position_or_direction = glm::vec4(1.2f, 1.0f, 2.0f, 1.0f);
-	light.ambient = glm::vec3(0.2f, 0.2f, 0.2f);
-	light.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-	light.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+	light.m_position_or_direction = glm::vec4(1.2f, 1.0f, 2.0f, 1.0f);
+	light.m_ambient = glm::vec3(0.2f, 0.2f, 0.2f);
+	light.m_diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+	light.m_specular = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	Material material;
 	material.ambient = glm::vec3(0.24725f, 0.1995f, 0.0745f);
@@ -133,11 +133,11 @@ int main(){
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		light.position_or_direction.x = 2 * sin(current_time);
-		light.position_or_direction.y = 2 * cos(current_time);
+		light.m_position_or_direction.x = 2 * sin(current_time);
+		light.m_position_or_direction.y = 2 * cos(current_time);
 
 		glm::mat4 lightCubeModel = glm::mat4(1.0f);
-		lightCubeModel = glm::translate(cubeModel, glm::vec3(light.position_or_direction));
+		lightCubeModel = glm::translate(cubeModel, glm::vec3(light.m_position_or_direction));
 		lightCubeModel = glm::scale(lightCubeModel, glm::vec3(0.2));
 
 		lightCubeShader.use();

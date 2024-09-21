@@ -91,17 +91,17 @@ int main(){
 	glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel)));
 
 	SpotLight light;
-	light.position_or_direction = glm::vec4(1.2f, 1.0f, 2.0f, 1.0f);
-	light.ambient = glm::vec3(0.2f, 0.2f, 0.2f);
-	light.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-	light.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+	light.m_position_or_direction = glm::vec4(1.2f, 1.0f, 2.0f, 1.0f);
+	light.m_ambient = glm::vec3(0.2f, 0.2f, 0.2f);
+	light.m_diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+	light.m_specular = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	light.constant = 1.0f;
-	light.linear = 0.09f;
-	light.quadratic = 0.032f;
+	light.m_constant = 1.0f;
+	light.m_linear = 0.09f;
+	light.m_quadratic = 0.032f;
 
-	light.direction = camera.getFront();
-	light.cutOff = glm::cos(glm::radians(12.5f));
+	light.m_direction = camera.getFront();
+	light.m_cutOff = glm::cos(glm::radians(12.5f));
 
 	camera.setNearPlane(Camera::NearPlane{45.0f, SCR_WIDTH, SCR_HEIGHT, 0.1f, 100.0f});
 
@@ -148,9 +148,9 @@ int main(){
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-		light.position_or_direction = glm::vec4(camera.getPosition(), 1.0f);
+		light.m_position_or_direction = glm::vec4(camera.getPosition(), 1.0f);
 
-		light.direction = glm::normalize(camera.getFront());
+		light.m_direction = glm::normalize(camera.getFront());
 
 		/* printVec3(light.direction); */
 		/* std::cout << std::endl; */

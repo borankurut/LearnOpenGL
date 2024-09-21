@@ -95,14 +95,14 @@ int main(){
 	/* glm::mat3 cubeNormalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel))); */
 
 	PointLight light;
-	light.position_or_direction = glm::vec4(1.2f, 1.0f, 2.0f, 1.0f);
-	light.ambient = glm::vec3(0.2f, 0.2f, 0.2f);
-	light.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-	light.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+	light.m_position_or_direction = glm::vec4(1.2f, 1.0f, 2.0f, 1.0f);
+	light.m_ambient = glm::vec3(0.2f, 0.2f, 0.2f);
+	light.m_diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+	light.m_specular = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	light.constant = 1.0f;
-	light.linear = 0.09f;
-	light.quadratic = 0.032f;
+	light.m_constant = 1.0f;
+	light.m_linear = 0.09f;
+	light.m_quadratic = 0.032f;
 
 	camera.setNearPlane(Camera::NearPlane{45.0f, SCR_WIDTH, SCR_HEIGHT, 0.1f, 100.0f});
 
@@ -154,7 +154,7 @@ int main(){
 
 		/* light.position_or_direction.x = 2 * sin(current_time); */
 		/* light.position_or_direction.y = 2 * cos(current_time); */
-		light.position_or_direction = glm::vec4(camera.getPosition(), 1.0f);
+		light.m_position_or_direction = glm::vec4(camera.getPosition(), 1.0f);
 
 		glm::mat4 lightCubeModel = glm::mat4(1.0f);
 		lightCubeModel = glm::translate(cubeModel, light.position());

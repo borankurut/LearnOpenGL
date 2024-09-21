@@ -100,10 +100,10 @@ int main(){
 	/* light.specular = glm::vec3(1.0f, 1.0f, 1.0f); */
 
 	Light directionalLight;
-	directionalLight.position_or_direction = glm::vec4(0.2f, -1.0f, 0.5f, 0.0f);
-	directionalLight.ambient = glm::vec3(0.2f, 0.2f, 0.2f);
-	directionalLight.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-	directionalLight.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+	directionalLight.m_position_or_direction = glm::vec4(0.2f, -1.0f, 0.5f, 0.0f);
+	directionalLight.m_ambient = glm::vec3(0.2f, 0.2f, 0.2f);
+	directionalLight.m_diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+	directionalLight.m_specular = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	camera.setNearPlane(Camera::NearPlane{45.0f, SCR_WIDTH, SCR_HEIGHT, 0.1f, 100.0f});
 
