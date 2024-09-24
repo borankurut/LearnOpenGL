@@ -12,8 +12,8 @@ struct Vertex{
 
 struct Texture{
 	unsigned int id;
-	enum class type {Unknown = 0, type1, type2}; // to be changed later.
 	std::string type;
+	std::string path;
 };
 
 class Mesh{

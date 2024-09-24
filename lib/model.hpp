@@ -20,5 +20,7 @@ private:
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	std::vector<Texture> loadMaterialTextures(aiMaterial* material, 
 			aiTextureType textureType, std::string typeName);
-
+	static unsigned int TextureFromFile(const char *path, const std::string &directory);
 };
+
+

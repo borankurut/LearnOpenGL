@@ -16,6 +16,16 @@ ImageLoader::ImageInfo ImageLoader::loadImage(const char *filename, int req_comp
 	ImageLoader::ImageInfo imageInfo;
 
 	imageInfo.data = stbi_load(filename, &imageInfo.width, &imageInfo.height, &imageInfo.nrChannels, req_comp);
+
+    if (imageInfo.data){
+        if (imageInfo.nrChannels == 1)
+            imageInfo.format = GL_RED;
+        else if (imageInfo.nrChannels == 3)
+            imageInfo.format = GL_RGB;
+        else if (imageInfo.nrChannels == 4)
+            imageInfo.format = GL_RGBA;
+	}
+
 	imageInfo.aspectRatio = (float) imageInfo.width / (float) imageInfo.height;
 
 	return imageInfo;
