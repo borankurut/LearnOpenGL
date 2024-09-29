@@ -110,12 +110,22 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* material,
 	for(unsigned int i = 0; i < material->GetTextureCount(textureType); ++i){
 		aiString str;
 		material->GetTexture(textureType, i, &str);
+		bool skip = false;
 
-		Texture texture;
-		texture.id = TextureFromFile(str.C_Str(), m_directory);
-		texture.type = typeName;
-		texture.path = str.C_Str();
-		textures.push_back(texture);
+		for(unsigned int i = 0; i < m_textures_loaded.size(); ++i){
+			if(std::strcmp(m_textures_loaded[i].path.data(), str.C_Str()) == 0){
+				skip = true;
+				textures.push_back(m_textures_loaded[i]);
+				break;
+			}
+		}
+		if(!skip){
+			Texture texture;
+			texture.id = TextureFromFile(str.C_Str(), m_directory);
+			texture.type = typeName;
+			texture.path = str.C_Str();
+			textures.push_back(texture);
+		}
 	}
 	return textures;
 }
