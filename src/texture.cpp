@@ -60,8 +60,8 @@ int main(){
 
 	// init textures
 	float ar1[2], ar2[2];
-	Texture texture1("Textures/cami.png", GL_TEXTURE0, GL_RGBA, GL_RGBA);
-	Texture texture2("Textures/celal.png", GL_TEXTURE1, GL_RGBA, GL_RGBA);
+	Texture2 texture1("Textures/cami.png", GL_TEXTURE0, GL_RGBA, GL_RGBA);
+	Texture2 texture2("Textures/celal.png", GL_TEXTURE1, GL_RGBA, GL_RGBA);
 	ar1[0] = 1.0f;
 	ar1[1] = 1.0f / texture1.p_imageInfo.getAspectRatio();
 

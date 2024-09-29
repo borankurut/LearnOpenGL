@@ -1,7 +1,7 @@
 #include "texture.hpp"
 #include <iostream>
 
-Texture::Texture(const std::string& path, GLenum unit, GLenum internalFormat, GLenum format)
+Texture2::Texture2(const std::string& path, GLenum unit, GLenum internalFormat, GLenum format)
 	: m_unit(unit), m_internalFormat(internalFormat), m_format(format){
 
 	glGenTextures(1, &m_ID);
@@ -27,18 +27,18 @@ Texture::Texture(const std::string& path, GLenum unit, GLenum internalFormat, GL
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Texture::~Texture(){
+Texture2::~Texture2(){
 	glDeleteTextures(1, &m_ID);	
 
 }
 
-void Texture::use(const std::string& uniformName, const Shader & shader) const{
+void Texture2::use(const std::string& uniformName, const Shader & shader) const{
 	glActiveTexture(m_unit);
 	glBindTexture(GL_TEXTURE_2D, m_ID);
 	shader.setInt(uniformName, m_unit - GL_TEXTURE0);
 }
 
-void Texture::unbind() const{
+void Texture2::unbind() const{
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 

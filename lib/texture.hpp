@@ -5,12 +5,12 @@
 #include <glad/glad.h>
 #include <string>
 
-class Texture{
+class Texture2{
 
 public:
-	Texture(const std::string& path, GLenum unit, GLenum internalFormat, GLenum format);
+	Texture2(const std::string& path, GLenum unit, GLenum internalFormat, GLenum format);
 
-	~Texture();
+	~Texture2();
 
 	void use(const std::string& uniformName, const Shader & shader) const;
 

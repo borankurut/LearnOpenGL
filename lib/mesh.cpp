@@ -48,11 +48,12 @@ void Mesh::draw(Shader &shader){
 		std::string name = m_textures[i].type;
 		if(name == "texture_diffuse"){
 			number = std::to_string(diffuseNr++);
-
 		}
 		else if(name == "texture_specular"){
 			number = std::to_string(specularNr++);
 		}
+
+		/* std::cout << ("material." +  name + number); */
 
 		shader.setFloat(("material." + name + number).c_str(), i);
 		glBindTexture(GL_TEXTURE_2D, m_textures[i].id);

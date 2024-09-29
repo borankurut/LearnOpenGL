@@ -124,11 +124,11 @@ int main(){
 	lightingShader.setPointLights("pointLights", pointLights);
 	lightingShader.setDirLight("dirLight", directionalLight);
 
-	Texture diffuseTexture = Texture("Textures/container2.png", GL_TEXTURE0, GL_RGBA, GL_RGBA);
+	Texture2 diffuseTexture = Texture2("Textures/container2.png", GL_TEXTURE0, GL_RGBA, GL_RGBA);
 
-	Texture specularTexture = Texture("Textures/container2_specular.png", GL_TEXTURE1, GL_RGBA, GL_RGBA);
+	Texture2 specularTexture = Texture2("Textures/container2_specular.png", GL_TEXTURE1, GL_RGBA, GL_RGBA);
 
-	Texture emmisionTexture = Texture("Textures/emmisionTexture.png", GL_TEXTURE2, GL_RGBA, GL_RGBA);
+	Texture2 emmisionTexture = Texture2("Textures/emmisionTexture.png", GL_TEXTURE2, GL_RGBA, GL_RGBA);
 
 	diffuseTexture.use("material.diffuse", lightingShader);
 	specularTexture.use("material.specular", lightingShader);

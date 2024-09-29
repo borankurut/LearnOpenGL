@@ -97,6 +97,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene){
 
 		std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+
 	}
 	return Mesh(vertices, indices, textures);
 }
@@ -119,7 +120,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* material,
 	return textures;
 }
 
-unsigned int TextureFromFile(const char *path, const std::string &directory)
+unsigned int Model::TextureFromFile(const char *path, const std::string &directory)
 {
 	std::string filename = std::string(path);
     filename = directory + '/' + filename;

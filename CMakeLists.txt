@@ -6,6 +6,8 @@ set(PROJECT_NAME "OpenGLProject")
 # Create compile_commands.json for clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+
 # Use the project name variable
 project(${PROJECT_NAME})
 
@@ -21,6 +23,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Add subdirectories for GLFW and GLAD
 add_subdirectory(extern/glfw)
 add_subdirectory(extern/glad)
+add_subdirectory(extern/assimp-5.4.3)
 
 # Include directories from external libraries
 include_directories(include)
@@ -43,7 +46,7 @@ add_custom_target(copy_shaders ALL
 # Function to create an executable for each main cpp file
 function(add_application app_name)
     add_executable(${app_name} ${ARGN} ${LIB_FILES})
-    target_link_libraries(${app_name} glfw glad)
+    target_link_libraries(${app_name} glfw glad assimp)
 
     # Ensure shaders are copied before building the executable
     add_dependencies(${app_name} copy_shaders)
